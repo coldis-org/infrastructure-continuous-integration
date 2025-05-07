@@ -114,7 +114,7 @@ ${DEBUG} && echo "HOST_NOMAD=${HOST_NOMAD}"
 ALLOC_ID=$(curl -sk \
 	--header "X-Nomad-Token: ${NOMAD_TOKEN}" \
   	${HOST_NOMAD}/v1/job/${JOB_ID}/allocations \
-	| jq -r '.[].ID' ) 
+	| jq -r '[.[] | select(.ClientStatus == "running")][0].ID') 
 
 # Get host ip
 AGENT_IP=$(curl -sk \
