@@ -169,6 +169,18 @@ then
 
 fi
 
+# If there is private S3 Docker information.
+if env | grep "DOCKER_PRIVATE_USER_NAME=" && [ ! -z "${DOCKER_PRIVATE_USER_NAME}" ]
+then
+
+	# Logs in the Docker repository.
+	${DEBUG} && echo "Logging in the docker s3 repository"
+	docker login -u ${DOCKER_PRIVATE_USER_NAME} \
+		-p ${DOCKER_PRIVATE_USER_PASSWORD} ${DOCKER_PRIVATE_S3_REPOSITORY_URL} || \
+	echo "Docker login failed."
+
+fi
+
 # If there is DCOs configuration.
 if [ -d ${JENKINS_HOME}/dcos/ ]
 then
