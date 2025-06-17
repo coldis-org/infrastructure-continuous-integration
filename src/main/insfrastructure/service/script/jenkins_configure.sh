@@ -167,6 +167,11 @@ then
 		-p ${DOCKER_PRIVATE_USER_PASSWORD} ${DOCKER_PRIVATE_REPOSITORY_URL} || \
 	echo "Docker login failed."
 
+	${DEBUG} && echo "Logging in the docker s3 repository"
+	docker login -u ${DOCKER_PRIVATE_USER_NAME} \
+		-p ${DOCKER_PRIVATE_USER_PASSWORD} ${DOCKER_PRIVATE_S3_REPOSITORY_URL} || \
+	echo "Docker login S3 failed."
+
 fi
 
 # If there is DCOs configuration.
