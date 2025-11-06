@@ -8,6 +8,10 @@ FROM jenkins/jenkins:2.474-jdk21
 USER root
 
 # Changes locale and timezone.
+RUN apt-get update && apt-get install -y --no-install-recommends locales \
+ 	&& sed -i 's/^# *pt_BR.UTF-8 UTF-8/pt_BR.UTF-8 UTF-8/' /etc/locale.gen \
+ 	&& locale-gen \
+ 	&& rm -rf /var/lib/apt/lists/*
 ENV TZ=America/Sao_Paulo \
 	LANG_FILE=pt_BR.UTF-8 \
 	LANG=pt_BR.utf8 \
