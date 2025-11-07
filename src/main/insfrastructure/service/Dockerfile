@@ -131,6 +131,10 @@ COPY config/plugins.txt /usr/share/jenkins/ref/plugins.txt
 RUN chown jenkins /usr/share/jenkins/ref/plugins.txt && \
 	jenkins-plugin-cli -f /usr/share/jenkins/ref/plugins.txt
 	
+RUN echo '#!/bin/bash\n'\
+	'echo "Skipping operational_utils_docker_build_modules.sh"' \
+	> /opt/operational-utils-script/utils/script/operational_utils_docker_build_modules.sh
+
 # Sets the user back to Jenkins.
 USER jenkins
 ENV HOME=/var/jenkins_home
