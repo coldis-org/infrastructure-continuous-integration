@@ -8,6 +8,10 @@ FROM jenkins/jenkins:2.474-jdk21
 USER root
 
 # Changes locale and timezone.
+RUN apt-get update && apt-get install -y --no-install-recommends locales \
+ 	&& sed -i 's/^# *pt_BR.UTF-8 UTF-8/pt_BR.UTF-8 UTF-8/' /etc/locale.gen \
+ 	&& locale-gen \
+ 	&& rm -rf /var/lib/apt/lists/*
 ENV TZ=America/Sao_Paulo \
 	LANG_FILE=pt_BR.UTF-8 \
 	LANG=pt_BR.utf8 \
@@ -127,6 +131,10 @@ COPY config/plugins.txt /usr/share/jenkins/ref/plugins.txt
 RUN chown jenkins /usr/share/jenkins/ref/plugins.txt && \
 	jenkins-plugin-cli -f /usr/share/jenkins/ref/plugins.txt
 	
+RUN echo '#!/bin/bash\n'\
+	'echo "Skipping operational_utils_docker_build_modules.sh"' \
+	> /opt/operational-utils-script/utils/script/operational_utils_docker_build_modules.sh
+
 # Sets the user back to Jenkins.
 USER jenkins
 ENV HOME=/var/jenkins_home
