@@ -57,6 +57,10 @@
 		"MAVEN_REPOSITORY_URL": "",
 		"MAVEN_USER_NAME": "",
 		"MAVEN_USER_PASSWORD": "",
+		"GITLAB_MAVEN_REPOSITORY_ID": "",
+		"GITLAB_MAVEN_REPOSITORY_URL": "",
+		"GITLAB_MAVEN_USER_NAME": "",
+		"GITLAB_MAVEN_USER_PASSWORD": "",
 		"START_DCOS_CLI": "true",
 		"JAVA_OPTS": "-Dhudson.footerURL=http://continuous-integration-service.governance.technology.coldis.org"
 	},

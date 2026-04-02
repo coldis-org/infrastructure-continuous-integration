@@ -55,6 +55,34 @@ then
 	
 	# Configures Maven.
 	${DEBUG} && echo "Configuring Maven in continuous integration"
+	# Determines mirror exclusion if GitLab is configured.
+	if [ -n "${GITLAB_MAVEN_REPOSITORY_ID:-}" ]
+	then
+		MAVEN_MIRROR_OF="*,!${GITLAB_MAVEN_REPOSITORY_ID}"
+		GITLAB_MAVEN_SERVER="<server>
+			<id>${GITLAB_MAVEN_REPOSITORY_ID}</id>
+			<username>${GITLAB_MAVEN_USER_NAME}</username>
+			<password>${GITLAB_MAVEN_USER_PASSWORD}</password>
+		</server>"
+		GITLAB_MAVEN_REPOSITORY="<repository>
+				<id>${GITLAB_MAVEN_REPOSITORY_ID}</id>
+				<url>${GITLAB_MAVEN_REPOSITORY_URL}</url>
+					<releases><enabled>true</enabled></releases>
+					<snapshots><enabled>true</enabled></snapshots>
+				</repository>"
+		GITLAB_MAVEN_PLUGIN_REPOSITORY="<pluginRepository>
+				<id>${GITLAB_MAVEN_REPOSITORY_ID}</id>
+				<url>${GITLAB_MAVEN_REPOSITORY_URL}</url>
+					<releases><enabled>true</enabled></releases>
+					<snapshots><enabled>true</enabled></snapshots>
+				</pluginRepository>"
+	else
+		MAVEN_MIRROR_OF="*"
+		GITLAB_MAVEN_SERVER=""
+		GITLAB_MAVEN_REPOSITORY=""
+		GITLAB_MAVEN_PLUGIN_REPOSITORY=""
+	fi
+
 	tee .m2/settings.xml <<EOF
 <settings>
 	<servers>
@@ -62,14 +90,15 @@ then
 			<id>${MAVEN_REPOSITORY_ID}</id>
 			<username>${MAVEN_USER_NAME}</username>
 			<password>${MAVEN_USER_PASSWORD}</password>
-		</server> 
-	</servers> 
+		</server>
+		${GITLAB_MAVEN_SERVER}
+	</servers>
 	<mirrors>
 		<mirror>
 			<id>${MAVEN_REPOSITORY_ID}</id>
 			<name>Repository mirror</name>
 			<url>${MAVEN_REPOSITORY_URL}</url>
-			<mirrorOf>*</mirrorOf>
+			<mirrorOf>${MAVEN_MIRROR_OF}</mirrorOf>
 		</mirror>
 	</mirrors>
 	<profiles>
@@ -82,6 +111,7 @@ then
 					<releases><enabled>true</enabled></releases>
 					<snapshots><enabled>true</enabled></snapshots>
 				</repository>
+				${GITLAB_MAVEN_REPOSITORY}
 			</repositories>
 			<pluginRepositories>
 				<pluginRepository>
@@ -90,6 +120,7 @@ then
 					<releases><enabled>true</enabled></releases>
 					<snapshots><enabled>true</enabled></snapshots>
 				</pluginRepository>
+				${GITLAB_MAVEN_PLUGIN_REPOSITORY}
 			</pluginRepositories>
 		</profile>
 	</profiles>
